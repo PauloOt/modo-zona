@@ -1,5 +1,7 @@
 # Modo Zona
 
+**→ [pauloot.github.io/modo-zona](https://pauloot.github.io/modo-zona/)**
+
 App de música funcional para foco — no espírito do Brain.fm, mas com o motor
 aberto e todos os parâmetros na mão do usuário.
 
