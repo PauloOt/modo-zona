@@ -30,6 +30,32 @@ tipo isocrônico. O controle **Envoltória** é o desvio dessa janela. A mesma
 função desenha as ondinhas nos cartões de modo e alimenta o `PeriodicWave` do
 LFO — uma definição só, som e gráfico sempre coerentes.
 
+### Cores de ruído
+
+O leito de ruído tem cinco cores, que diferem pela inclinação do espectro —
+cada −3 dB por oitava é uma integração do branco, cada +3 dB uma derivada:
+
+| Cor | Inclinação | Para quê |
+|-----|-----------|----------|
+| Marrom | −6 dB/oitava | cachoeira; mascara trânsito e zumbido de máquina |
+| Rosa | −3 dB/oitava | energia igual por oitava, que é como o ouvido divide o espectro |
+| Branco | plano | o que mais cobre voz, e o que mais cansa |
+| Azul | +3 dB/oitava | chiado fino, com o brilho fechado |
+| Violeta | +6 dB/oitava | mascarar tinnitus agudo |
+
+Cada buffer é **normalizado pelo RMS** antes de tocar, então trocar de cor
+muda o timbre sem mudar o volume — que é o que permite compará-las. E como um
+`AudioBufferSourceNode` não troca de buffer depois de iniciado, a troca entra
+como crossfade de 1,5 s entre duas fontes (`startNoise()`), sem cortar o som.
+
+### Recomendações
+
+A aba **Modos** traz receitas: cada uma aplica um conjunto de ajustes e diz
+por que aquilo funciona. E como a frequência virou um slider livre, a aba
+**Ajustes** mostra ao vivo em que faixa de EEG você caiu, o que se observa
+nela, para que serve e onde a promessa costuma passar do que foi demonstrado
+(`BAND_INFO`).
+
 ### Faixas
 
 | Faixa | Hz        | Modo de fábrica     |
@@ -59,6 +85,20 @@ rótulo acompanha.
 - **`<audio>` silencioso em loop** durante a sessão: sem ele o Web Audio não
   aparece nos controles de mídia do sistema nem sobrevive bem à tela apagada
   no celular.
+
+## Temas
+
+Seis paletas, cada uma definida por **dois matizes e dois cromas** — o neutro
+e o acento. A luminosidade vem de uma escada fixa por modo (`LADDER`), o que
+mantém o contraste igual em todos os temas: não dá para escolher um tema
+ilegível. A conversão OKLCH → sRGB é feita em JS (`oklchHex()`, matrizes de
+Björn Ottosson) em vez de `oklch()` no CSS, para que o mesmo hex sirva ao CSS,
+ao canvas e à `<meta name="theme-color">` sem depender de suporte do navegador
+em três lugares distintos.
+
+A aparência é um eixo separado do tema: Sistema, Claro ou Escuro. Os dois
+ficam no aparelho (`localStorage`), não no modo — trocar de modo não mexe nas
+suas cores.
 
 ## Personalização
 

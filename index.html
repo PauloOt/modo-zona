@@ -102,7 +102,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .now p{margin:0 auto;max-width:44ch;color:var(--muted);font-size:13px;line-height:1.55;text-wrap:pretty}
 
 /* ---------- abas ---------- */
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface-2);padding:4px;border-radius:11px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;background:var(--surface-2);padding:4px;border-radius:11px}
 .tab{
   font:inherit;font-size:13px;font-weight:500;color:var(--muted);
   background:transparent;border:0;border-radius:8px;padding:9px 6px;cursor:pointer;
@@ -244,6 +244,54 @@ details.xfer .body{padding:0 13px 13px;display:flex;flex-direction:column;gap:8p
 .bar{height:2px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s linear}
 
+/* ---------- explicação da faixa ---------- */
+.why{
+  background:var(--surface);border:1px solid var(--line);border-left:2px solid var(--accent);
+  border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;
+}
+.why-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.why-h b{font-size:15px;font-weight:600}
+.why-h span{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.why p{margin:0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.why p.uso{color:var(--ink)}
+.why p.dica{
+  color:var(--accent-ink);border-top:1px solid var(--line);padding-top:6px;margin-top:1px;
+}
+
+/* ---------- receitas ---------- */
+.recipe{
+  text-align:left;font:inherit;cursor:pointer;width:100%;
+  background:var(--surface);border:1px solid var(--line);border-radius:11px;
+  padding:11px 13px;display:flex;flex-direction:column;gap:4px;
+  transition:border-color .15s;
+}
+.recipe:hover{border-color:var(--accent)}
+.recipe b{font-size:13.5px;font-weight:600}
+.recipe span{font-size:12px;line-height:1.5;color:var(--muted)}
+.recipes{display:flex;flex-direction:column;gap:7px}
+
+/* ---------- visual ---------- */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--surface-2);padding:3px;border-radius:9px}
+.seg button{
+  font:inherit;font-size:12.5px;font-weight:500;color:var(--muted);
+  background:transparent;border:0;border-radius:7px;padding:8px 4px;cursor:pointer;min-height:36px;
+}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:7px}
+.swatch{
+  display:flex;align-items:center;gap:9px;font:inherit;font-size:13px;font-weight:500;
+  color:var(--ink);background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;padding:8px 11px;cursor:pointer;min-height:44px;text-align:left;
+  transition:border-color .15s;
+}
+.swatch:hover{border-color:var(--muted)}
+.swatch[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-wash)}
+.sw-dot{
+  width:24px;height:24px;border-radius:50%;border:1px solid;
+  display:grid;place-items:center;flex:0 0 auto;
+}
+.sw-dot i{width:10px;height:10px;border-radius:50%;display:block}
+
 footer{color:var(--muted);font-size:11.5px;line-height:1.55;padding-block:16px 28px}
 footer b{color:var(--ink);font-weight:500}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:5px}
@@ -287,6 +335,7 @@ footer b{color:var(--ink);font-weight:500}
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" id="t-modos"  aria-controls="p-modos"  aria-selected="true">Modos</button>
     <button class="tab" role="tab" id="t-ajustes" aria-controls="p-ajustes" aria-selected="false">Ajustes</button>
+    <button class="tab" role="tab" id="t-visual" aria-controls="p-visual" aria-selected="false">Visual</button>
     <button class="tab" role="tab" id="t-motor"  aria-controls="p-motor"  aria-selected="false">Motor</button>
   </div>
 
@@ -305,6 +354,12 @@ footer b{color:var(--ink);font-weight:500}
         <input type="text" id="saveName" placeholder="Nome do modo" maxlength="28" autocomplete="off">
         <button class="btn primary" id="saveBtn">Salvar ajustes atuais</button>
       </div>
+    </div>
+
+    <div class="group">
+      <h3>Sugestões</h3>
+      <p class="note">Cada uma aplica um conjunto de ajustes por cima do que está tocando, e diz por quê.</p>
+      <div class="recipes" id="recipes"></div>
     </div>
 
     <details class="xfer">
@@ -328,6 +383,12 @@ footer b{color:var(--ink);font-weight:500}
         <label for="c_hz">Frequência</label>
         <input type="range" id="c_hz" min="1" max="45" step="0.5">
         <output id="o_hz">—</output>
+      </div>
+      <div class="why">
+        <div class="why-h"><b id="whyName">—</b><span id="whyRange">—</span></div>
+        <p id="whyOnde">—</p>
+        <p class="uso" id="whyUso">—</p>
+        <p class="dica" id="whyDica">—</p>
       </div>
       <div class="ctl">
         <label for="c_depth">Profundidade</label>
@@ -381,6 +442,11 @@ footer b{color:var(--ink);font-weight:500}
         <input type="range" id="c_brilho" min="280" max="2400" step="20">
         <output id="o_brilho">—</output>
       </div>
+      <div class="ctl">
+        <label for="c_ruido">Ruído</label>
+        <select id="c_ruido"></select>
+      </div>
+      <p class="note" id="noiseNote">—</p>
     </div>
 
     <div class="group">
@@ -422,6 +488,35 @@ footer b{color:var(--ink);font-weight:500}
     </div>
   </div>
 
+  <!-- ===================== VISUAL ===================== -->
+  <div class="pane" id="p-visual" role="tabpanel" aria-labelledby="t-visual" hidden>
+    <div class="group">
+      <h3>Aparência</h3>
+      <div class="seg" id="seg" role="group" aria-label="Aparência">
+        <button type="button" data-ap="sistema" aria-pressed="true">Sistema</button>
+        <button type="button" data-ap="light"   aria-pressed="false">Claro</button>
+        <button type="button" data-ap="dark"    aria-pressed="false">Escuro</button>
+      </div>
+      <p class="note" id="apNote">—</p>
+    </div>
+
+    <div class="group">
+      <h3>Tema</h3>
+      <div class="swatches" id="swatches"></div>
+      <p class="note">As paletas são geradas em OKLCH a partir de dois matizes por tema, com a mesma escada de luminosidade — por isso o contraste continua o mesmo em todas, no claro e no escuro.</p>
+    </div>
+
+    <div class="group">
+      <h3>Movimento</h3>
+      <div class="sw">
+        <input type="checkbox" id="c_flick">
+        <label for="c_flick">Pulso visual sincronizado
+          <span class="hint">Por padrão o anel responde com atraso de ~0,3 s, então não consegue piscar na taxa da modulação. Ligando isto ele passa a acompanhar de perto. <b>Não use</b> se você tem epilepsia fotossensível ou enxaqueca com aura.</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== MOTOR ===================== -->
   <div class="pane" id="p-motor" role="tabpanel" aria-labelledby="t-motor" hidden>
     <div class="scope">
@@ -453,15 +548,6 @@ footer b{color:var(--ink);font-weight:500}
       </div>
     </div>
 
-    <div class="group">
-      <h3>Visual</h3>
-      <div class="sw">
-        <input type="checkbox" id="c_flick">
-        <label for="c_flick">Pulso visual sincronizado
-          <span class="hint">Por padrão o anel responde com atraso de ~0,3 s, então não consegue piscar na taxa da modulação. Ligando isto ele passa a acompanhar de perto. <b>Não use</b> se você tem epilepsia fotossensível ou enxaqueca com aura.</span>
-        </label>
-      </div>
-    </div>
   </div>
 
   <div class="transport">
@@ -526,6 +612,74 @@ const rootName = f => (ROOTS.find(r => Math.abs(r.f-f) < .5) || {n:'—'}).n;
 
 const DURS = [15,25,45,60,90,0];
 
+const NOISES = {
+  marrom:  {nome:'Marrom',  slope:'−6 dB/oitava'},
+  rosa:    {nome:'Rosa',    slope:'−3 dB/oitava'},
+  branco:  {nome:'Branco',  slope:'espectro plano'},
+  azul:    {nome:'Azul',    slope:'+3 dB/oitava'},
+  violeta: {nome:'Violeta', slope:'+6 dB/oitava'}
+};
+const NOISE_DESC = {
+  marrom:  'O mais grave e macio — é ruído de cachoeira. Mascara bem trânsito e zumbido de máquina, quase nada de conversa.',
+  rosa:    'Energia igual por oitava, que é como o ouvido divide o espectro. O mais "natural" dos cinco: chuva, folhagem.',
+  branco:  'Energia igual por hertz, então soa muito mais agudo que o rosa. É o que mais cobre voz — e o que mais cansa.',
+  azul:    'Inclina para o agudo. Pouco usado sozinho; com o brilho fechado vira um chiado fino e discreto.',
+  violeta: 'O mais agudo. Serve para mascarar zumbido agudo (tinnitus), e é sofrível para qualquer outra coisa.'
+};
+
+/* Faixas de EEG: o que se observa, para que serve, e onde a promessa
+   costuma passar do que foi demonstrado. */
+const BAND_INFO = {
+  Delta: {
+    onde:'Domina o sono profundo (estágio N3).',
+    uso:'Desacelerar no fim do dia. Na prática o que ajuda aqui é menos o arrastamento e mais ter um leito estável que some sozinho.',
+    dica:'Ligue a descida e feche a duração — o fade de saída importa mais que a frequência exata.'
+  },
+  Teta: {
+    onde:'Aparece na sonolência, no sono leve e em alguns estados de meditação.',
+    uso:'Respiração, prática contemplativa, pausa longa. Ruim para tarefa que exige precisão.',
+    dica:'Profundidade baixa e envoltória senoidal: em teta o pulso marcado atrapalha mais do que ajuda.'
+  },
+  Alfa: {
+    onde:'Vigília relaxada, mais forte de olhos fechados. Ligada a atenção difusa, não estreita.',
+    uso:'Rascunho, escrita livre, ideação — quando você quer associação solta em vez de foco de agulha.',
+    dica:'Combina com harmonia aberta (lídio) e troca de acorde lenta.'
+  },
+  Beta: {
+    onde:'Vigília ativa, pensamento dirigido, atenção focada.',
+    uso:'Trabalho analítico contínuo: código, planilha, leitura técnica, conferência.',
+    dica:'É a faixa com melhor custo-benefício para trabalho. 14–18 Hz costuma ser o ponto doce.'
+  },
+  Gama: {
+    onde:'Ligada a integração perceptual e atenção sustentada.',
+    uso:'Sessões longas, onde o problema é a queda de meia hora e não a entrada.',
+    dica:'É também onde há mais distância entre o que se promete e o que se demonstrou. Teste antes de acreditar.'
+  }
+};
+
+/* Receitas: um conjunto de mudanças e a razão delas. */
+const RECIPES = [
+  { nome:'Calma mais funda',
+    porque:'Sem camada rítmica, a modulação é a única pulsação da trilha. Aumentar a profundidade dá um alvo mais nítido sem precisar subir o volume.',
+    set:{hz:8, depth:.55, sharp:.12, ramp:90, glide:0, mix:{pulso:0, verb:.6, ruido:.6}} },
+
+  { nome:'Foco sem melodia',
+    porque:'Harmonia parada e pulso desligado: o ouvido para de tentar prever a próxima nota, que é o que rouba atenção da tarefa.',
+    set:{hz:16, depth:.3, prog:'estatico', chord:52, mix:{pulso:0}} },
+
+  { nome:'Entrada longa',
+    porque:'Modulação cheia logo de cara costuma cansar em vinte minutos. Subindo em três minutos o ouvido acomoda e a sessão rende mais.',
+    set:{ramp:180} },
+
+  { nome:'Máscara de escritório',
+    porque:'Ruído branco cobre conversa muito melhor que o marrom, que só mascara o grave. Brilho aberto e pad baixo deixam o espectro plano justo onde a fala vive.',
+    set:{ruido:'branco', brilho:2000, mix:{ruido:.85, pad:.35, pulso:.2}} },
+
+  { nome:'Soneca de 25 min',
+    porque:'A descida leva a modulação de 10 Hz até delta em 70% da sessão, e o fade final de 18 s evita acordar com o som cortando seco.',
+    set:{hz:3, glide:10, ramp:60, sharp:.1, mix:{pulso:0}}, dur:25 }
+];
+
 /* Cada modo é um conjunto completo de parâmetros — os de fábrica e os
    do usuário têm exatamente a mesma forma. */
 const BUILTIN = [
@@ -533,37 +687,37 @@ const BUILTIN = [
     desc:'Modulação em 16 Hz sobre um leito harmônico que quase não se move. Trabalho analítico contínuo: código, planilha, conferência.',
     hz:16, depth:.35, sharp:.45, ramp:75, glide:0,
     root:146.83, escala:'dorian', prog:'suspenso', chord:22, bpm:88, brilho:780,
-    mix:{pad:.75, ruido:.5, pulso:.55, sub:.5, verb:.35}, bin:false, carrier:180 },
+    ruido:'marrom', mix:{pad:.75, ruido:.5, pulso:.55, sub:.5, verb:.35}, bin:false, carrier:180 },
 
   { id:'zona', nome:'Zona',
     desc:'40 Hz — faixa ligada a atenção sustentada e integração perceptual. Pulso presente, para sessões longas sem a queda de meia hora.',
     hz:40, depth:.45, sharp:.65, ramp:60, glide:0,
     root:164.81, escala:'mixo', prog:'ciclico', chord:18, bpm:96, brilho:940,
-    mix:{pad:.7, ruido:.45, pulso:.72, sub:.5, verb:.3}, bin:false, carrier:180 },
+    ruido:'rosa',   mix:{pad:.7, ruido:.45, pulso:.72, sub:.5, verb:.3}, bin:false, carrier:180 },
 
   { id:'criativo', nome:'Criativo',
     desc:'Alfa em 10 Hz com harmonia lídia, aberta e sem resolução. Rascunho, escrita livre, ideação — atenção difusa em vez de estreita.',
     hz:10, depth:.3, sharp:.3, ramp:90, glide:0,
     root:130.81, escala:'lydian', prog:'suspenso', chord:26, bpm:70, brilho:850,
-    mix:{pad:.8, ruido:.5, pulso:.3, sub:.45, verb:.45}, bin:false, carrier:180 },
+    ruido:'rosa',   mix:{pad:.8, ruido:.5, pulso:.3, sub:.45, verb:.45}, bin:false, carrier:180 },
 
   { id:'calma', nome:'Calma',
     desc:'8 Hz, sem camada rítmica nenhuma. Para descer o ruído entre duas tarefas, ou antes de algo que exige presença.',
     hz:8, depth:.28, sharp:.15, ramp:90, glide:0,
     root:110, escala:'eolio', prog:'estatico', chord:30, bpm:56, brilho:640,
-    mix:{pad:.75, ruido:.6, pulso:0, sub:.55, verb:.5}, bin:false, carrier:150 },
+    ruido:'marrom', mix:{pad:.75, ruido:.6, pulso:0, sub:.55, verb:.5}, bin:false, carrier:150 },
 
   { id:'meditar', nome:'Meditação',
     desc:'Teta em 6 Hz, pentatônica, movimento harmônico mínimo. Respiração, prática contemplativa, pausa longa.',
     hz:6, depth:.32, sharp:.2, ramp:120, glide:0,
     root:98, escala:'penta', prog:'estatico', chord:38, bpm:48, brilho:560,
-    mix:{pad:.7, ruido:.55, pulso:0, sub:.6, verb:.55}, bin:false, carrier:140 },
+    ruido:'marrom', mix:{pad:.7, ruido:.55, pulso:0, sub:.6, verb:.55}, bin:false, carrier:140 },
 
   { id:'sono', nome:'Sono',
     desc:'Começa em 8 Hz e desce até 2,5 Hz ao longo da sessão, depois desliga sozinho. Delta, sem pulso, sem brilho no agudo.',
     hz:2.5, depth:.3, sharp:.1, ramp:120, glide:8,
     root:87.31, escala:'eolio', prog:'descida', chord:45, bpm:40, brilho:430,
-    mix:{pad:.65, ruido:.6, pulso:0, sub:.6, verb:.6}, bin:false, carrier:120 }
+    ruido:'marrom', mix:{pad:.65, ruido:.6, pulso:0, sub:.6, verb:.6}, bin:false, carrier:120 }
 ];
 
 /* ===================== estado ===================== */
@@ -579,6 +733,8 @@ let dirty   = false;
 let durMin  = 25;
 let volume  = .6;
 let flickOn = false;
+let temaId    = 'sodio';
+let aparencia = 'sistema';   // sistema | light | dark
 
 let ctx = null, G = null, playing = false, startedAt = 0;
 let schedTimer = null, tab = 'modos';
@@ -636,20 +792,60 @@ function pulseWave(sharp){
 }
 
 /* ===================== buffers ===================== */
-function brownNoise(sec){
+/* Um gerador por cor de ruído. A diferença entre elas é a inclinação do
+   espectro: cada −3 dB por oitava é uma integração, cada +3 dB uma derivada. */
+function noiseGen(type){
+  if(type === 'rosa' || type === 'azul'){
+    /* aproximação de Paul Kellett para 1/f */
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,prev=0;
+    return () => {
+      const w = Math.random()*2-1;
+      b0 = .99886*b0 + w*.0555179;
+      b1 = .99332*b1 + w*.0750759;
+      b2 = .96900*b2 + w*.1538520;
+      b3 = .86650*b3 + w*.3104856;
+      b4 = .55000*b4 + w*.5329522;
+      b5 = -.7616*b5 - w*.0168980;
+      const pink = (b0+b1+b2+b3+b4+b5+b6 + w*.5362)*.11;
+      b6 = w*.115926;
+      if(type === 'rosa') return pink;
+      const d = pink - prev; prev = pink;   // derivada do rosa = azul
+      return d;
+    };
+  }
+  if(type === 'marrom'){
+    let last = 0;
+    return () => {
+      const w = Math.random()*2-1;
+      last = (last + .02*w)/1.02;           // integral do branco = marrom
+      return last;
+    };
+  }
+  if(type === 'violeta'){
+    let prev = 0;
+    return () => {
+      const w = Math.random()*2-1;
+      const d = w - prev; prev = w;         // derivada do branco = violeta
+      return d;
+    };
+  }
+  return () => Math.random()*2-1;           // branco
+}
+
+/* Loop de 8 s com crossfade na emenda, normalizado pelo RMS: trocar de cor
+   muda o timbre sem mudar o volume, que é o que permite comparar. */
+function noiseBuffer(type, sec){
   const rate = ctx.sampleRate, xf = Math.floor(rate*.5), len = Math.floor(rate*sec);
   const buf = ctx.createBuffer(2, len, rate);
   for(let c=0;c<2;c++){
+    const gen = noiseGen(type);
     const tmp = new Float32Array(len+xf);
-    let last = 0;
-    for(let i=0;i<tmp.length;i++){
-      const w = Math.random()*2-1;
-      last = (last + .02*w)/1.02;
-      tmp[i] = last*3.2;
-    }
+    let sum = 0;
+    for(let i=0;i<tmp.length;i++){ const v = gen(); tmp[i] = v; sum += v*v; }
+    const k = .2 / (Math.sqrt(sum/tmp.length) || 1);
     const d = buf.getChannelData(c);
-    for(let i=0;i<len;i++) d[i] = tmp[i];
-    for(let i=0;i<xf;i++){ const a = i/xf; d[i] = d[i]*a + tmp[len+i]*(1-a); }
+    for(let i=0;i<len;i++) d[i] = tmp[i]*k;
+    for(let i=0;i<xf;i++){ const a = i/xf; d[i] = d[i]*a + tmp[len+i]*k*(1-a); }
   }
   return buf;
 }
@@ -709,16 +905,14 @@ function buildGraph(){
   g.sub.connect(g.subG).connect(g.dry);
   g.sub.start(now);
 
-  g.noise = ctx.createBufferSource();
-  g.noise.buffer = brownNoise(8); g.noise.loop = true;
   g.nHp = ctx.createBiquadFilter(); g.nHp.type = 'highpass'; g.nHp.frequency.value = 110;
   g.nFilt = ctx.createBiquadFilter(); g.nFilt.type = 'lowpass';
   g.nFilt.frequency.value = cur.brilho; g.nFilt.Q.value = .6;
   g.nG = ctx.createGain(); g.nG.gain.value = 0;
-  g.noise.connect(g.nHp).connect(g.nFilt).connect(g.nG);
+  g.nHp.connect(g.nFilt).connect(g.nG);
   const nMod = ctx.createGain(); nMod.gain.value = .55; g.nG.connect(nMod).connect(g.mod);
   const nDry = ctx.createGain(); nDry.gain.value = .45; g.nG.connect(nDry).connect(g.dry);
-  g.noise.start(now);
+  g.noiseSrc = null; g.noiseX = null; g.noiseTipo = null;
 
   g.breath = ctx.createOscillator(); g.breath.type = 'sine'; g.breath.frequency.value = .035;
   g.breathAmt = ctx.createGain(); g.breathAmt.gain.value = cur.brilho*.22;
@@ -748,6 +942,29 @@ function buildGraph(){
   g.master.gain.setValueAtTime(0, now);
   g.master.gain.linearRampToValueAtTime(volume, now + 3.5);
   return g;
+}
+
+/* Um AudioBufferSourceNode não troca de buffer depois de iniciado, então
+   mudar a cor do ruído entra como crossfade entre duas fontes. */
+function startNoise(type, fade){
+  if(!G) return;
+  const t = ctx.currentTime;
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuffer(type, 8);
+  src.loop = true;
+  const xg = ctx.createGain();
+  xg.gain.value = fade ? 0 : 1;
+  src.connect(xg).connect(G.nHp);
+  src.start(t);
+  if(fade) xg.gain.linearRampToValueAtTime(1, t + fade);
+
+  const oldSrc = G.noiseSrc, oldX = G.noiseX;
+  if(oldX){
+    const f = fade || .5;
+    oldX.gain.linearRampToValueAtTime(0, t + f);
+    setTimeout(() => { try{ oldSrc.stop(); oldSrc.disconnect(); }catch(e){} }, (f+.3)*1000);
+  }
+  G.noiseSrc = src; G.noiseX = xg; G.noiseTipo = type;
 }
 
 function padVoice(g, idx){
@@ -814,6 +1031,9 @@ function applyAudio(){
   const d = cur.depth * rampFactor();
   G.mod.gain.setTargetAtTime(1 - d/2, t, T);
   G.lfoAmt.gain.setTargetAtTime(d/2, t, T);
+
+  const tipo = cur.ruido || 'marrom';
+  if(tipo !== G.noiseTipo) startNoise(tipo, G.noiseTipo ? 1.5 : 0);
 
   G.padG.gain.setTargetAtTime(cur.mix.pad*.07, t, T);
   G.nG.gain.setTargetAtTime(cur.mix.ruido*.62, t, T);
@@ -945,7 +1165,8 @@ function stop(fade){
   g.master.gain.linearRampToValueAtTime(0, t + f);
   setTimeout(() => {
     try{
-      g.lfo.stop(); g.sub.stop(); g.noise.stop(); g.breath.stop();
+      g.lfo.stop(); g.sub.stop(); g.breath.stop();
+      if(g.noiseSrc) g.noiseSrc.stop();
       g.binL.stop(); g.binR.stop();
       g.pad.forEach(v => v.osc.forEach(o => o.stop()));
       g.master.disconnect();
@@ -1045,6 +1266,89 @@ function drawScope(){
 
   const ms = Math.round(scopeBuf.length/ctx.sampleRate*1000);
   $('#scopeCap').textContent = 'Envoltória ao vivo — janela de ' + ms + ' ms';
+}
+
+/* ===================== temas ===================== */
+/* Cada tema é só dois matizes (o neutro e o acento) mais o croma de cada um.
+   A luminosidade vem de uma escada fixa por modo, o que mantém o contraste
+   igual em todos os temas — não dá para inventar um tema ilegível. */
+const THEMES = {
+  sodio:    {nome:'Sódio',    nH:250, nC:.015, aH:70,  aC:.145},
+  musgo:    {nome:'Musgo',    nH:155, nC:.018, aH:132, aC:.125},
+  ferro:    {nome:'Ferro',    nH:255, nC:.006, aH:245, aC:.130},
+  brasa:    {nome:'Brasa',    nH:45,  nC:.022, aH:28,  aC:.150},
+  ametista: {nome:'Ametista', nH:305, nC:.020, aH:312, aC:.130},
+  cal:      {nome:'Cal',      nH:95,  nC:.012, aH:205, aC:.115}
+};
+
+/* [luminosidade, multiplicador de croma] */
+const LADDER = {
+  dark: {
+    ground:[.135,.60], surface:[.185,.70], 'surface-2':[.235,.80],
+    line:[.300,.90],   ink:[.920,.35],     muted:[.635,.50]
+  },
+  light: {
+    ground:[.955,.35], surface:[.995,.15], 'surface-2':[.925,.50],
+    line:[.860,.70],   ink:[.180,.50],     muted:[.465,.60]
+  }
+};
+const ACCENT_LADDER = {
+  dark:  {accent:[.780,1], 'accent-ink':[.855,.85], 'accent-wash':[.245,.40]},
+  light: {accent:[.485,1], 'accent-ink':[.420,1.0], 'accent-wash':[.905,.30]}
+};
+
+/* OKLCH → sRGB (matrizes de Björn Ottosson). Converto aqui em vez de usar
+   oklch() no CSS para que o mesmo hex sirva ao CSS, ao canvas e à meta
+   theme-color, sem depender de suporte do navegador em três lugares. */
+function oklchHex(L, C, Hdeg){
+  const h = Hdeg*Math.PI/180, a = C*Math.cos(h), b = C*Math.sin(h);
+  const l_ = L + .3963377774*a + .2158037573*b;
+  const m_ = L - .1055613458*a - .0638541728*b;
+  const s_ = L - .0894841775*a - 1.2914855480*b;
+  const l = l_*l_*l_, m = m_*m_*m_, s = s_*s_*s_;
+  return '#' + [
+     4.0767416621*l - 3.3077115913*m +  .2309699292*s,
+    -1.2684380046*l + 2.6097574011*m -  .3413193965*s,
+     -.0041960863*l -  .7034186147*m + 1.7076147010*s
+  ].map(x => {
+    const v = x <= .0031308 ? 12.92*x : 1.055*Math.pow(Math.max(x,0), 1/2.4) - .055;
+    return Math.round(clamp(v,0,1)*255).toString(16).padStart(2,'0');
+  }).join('');
+}
+
+function themeColors(id, mode){
+  const t = THEMES[id] || THEMES.sodio, out = {};
+  const L = LADDER[mode], A = ACCENT_LADDER[mode];
+  for(const k in L) out[k] = oklchHex(L[k][0], t.nC*L[k][1], t.nH);
+  for(const k in A) out[k] = oklchHex(A[k][0], t.aC*A[k][1], t.aH);
+  return out;
+}
+
+const sysDark = matchMedia('(prefers-color-scheme: dark)');
+const resolvedMode = () => aparencia === 'sistema' ? (sysDark.matches ? 'dark' : 'light') : aparencia;
+
+function applyTheme(){
+  const mode = resolvedMode();
+  const c = themeColors(temaId, mode);
+  const root = document.documentElement;
+  for(const k in c) root.style.setProperty('--'+k, c[k]);
+  root.style.colorScheme = mode;
+  root.setAttribute('data-theme', mode);
+
+  const metas = document.querySelectorAll('meta[name="theme-color"]');
+  metas.forEach((m, i) => { if(i) m.remove(); });
+  let meta = metas[0];
+  if(!meta){
+    meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    document.head.appendChild(meta);
+  }
+  meta.removeAttribute('media');
+  meta.content = c.ground;
+
+  readTheme();
+  requestAnimationFrame(redrawWaves);
+  paintVisual();
 }
 
 /* ===================== mostrador ===================== */
@@ -1217,6 +1521,97 @@ function paintHeader(){
 
 const allModes = () => BUILTIN.concat(custom);
 
+/* ===================== por quê da faixa ===================== */
+const BAND_RANGE = {
+  Delta:'0,5 – 4 Hz', Teta:'4 – 8 Hz', Alfa:'8 – 13 Hz',
+  Beta:'13 – 30 Hz',  Gama:'acima de 30 Hz'
+};
+
+function paintWhy(){
+  const b = bandOf(cur.hz), info = BAND_INFO[b];
+  if(!info) return;
+  $('#whyName').textContent  = b;
+  $('#whyRange').textContent = BAND_RANGE[b];
+  $('#whyOnde').textContent  = info.onde;
+  $('#whyUso').textContent   = info.uso;
+  $('#whyDica').textContent  = info.dica;
+}
+
+function paintNoise(){
+  const t = cur.ruido || 'marrom';
+  $('#c_ruido').value = t;
+  $('#noiseNote').textContent = NOISES[t].slope + ' — ' + NOISE_DESC[t];
+}
+
+/* ===================== receitas ===================== */
+function renderRecipes(){
+  const host = $('#recipes');
+  host.textContent = '';
+  RECIPES.forEach(r => {
+    const b = document.createElement('button');
+    b.className = 'recipe'; b.type = 'button';
+    const t = document.createElement('b'); t.textContent = r.nome;
+    const p = document.createElement('span'); p.textContent = r.porque;
+    b.append(t, p);
+    b.addEventListener('click', () => applyRecipe(r, b));
+    host.appendChild(b);
+  });
+}
+
+function applyRecipe(r, btn){
+  for(const k in r.set){
+    if(k === 'mix') Object.assign(cur.mix, r.set.mix);
+    else cur[k] = r.set[k];
+  }
+  if(r.dur !== undefined && DURS.includes(r.dur)){
+    durMin = r.dur;
+    $('#dur').value = durMin;
+    save('dur', durMin);
+    if(!playing) paintTransport();
+  }
+  markDirty();
+  syncControls();
+  paintReadout(); paintLive(); paintHeader();
+  applyAudio();
+  if(playing) nextChord = ctx.currentTime + .3;
+
+  const label = btn.querySelector('b'), antes = label.textContent;
+  label.textContent = 'Aplicado — veja em Ajustes';
+  setTimeout(() => { label.textContent = antes; }, 1800);
+}
+
+/* ===================== visual ===================== */
+function paintVisual(){
+  document.querySelectorAll('#seg button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.ap === aparencia)));
+  $('#apNote').textContent = aparencia === 'sistema'
+    ? 'Seguindo o sistema — agora ' + (resolvedMode() === 'dark' ? 'escuro' : 'claro') + '.'
+    : 'Fixado em ' + (aparencia === 'dark' ? 'escuro' : 'claro') + ', independente do sistema.';
+  document.querySelectorAll('.swatch').forEach(b => {
+    b.setAttribute('aria-pressed', String(b.dataset.tema === temaId));
+    const c = themeColors(b.dataset.tema, resolvedMode());
+    const dot = b.querySelector('.sw-dot');
+    dot.style.background = c.ground;
+    dot.style.borderColor = c.line;
+    dot.querySelector('i').style.background = c.accent;
+  });
+}
+
+function renderSwatches(){
+  const host = $('#swatches');
+  host.textContent = '';
+  Object.keys(THEMES).forEach(id => {
+    const b = document.createElement('button');
+    b.className = 'swatch'; b.type = 'button'; b.dataset.tema = id;
+    const dot = document.createElement('span'); dot.className = 'sw-dot';
+    dot.appendChild(document.createElement('i'));
+    const nm = document.createElement('span'); nm.textContent = THEMES[id].nome;
+    b.append(dot, nm);
+    b.addEventListener('click', () => { temaId = id; save('tema', id); applyTheme(); });
+    host.appendChild(b);
+  });
+}
+
 /* ===================== grade de modos ===================== */
 function modeCard(m, removable){
   const b = document.createElement('button');
@@ -1317,7 +1712,7 @@ CONTROLS.forEach(([id, set, get, fmtv]) => {
     out.textContent = fmtv(Number(el.value));
     markDirty();
     applyAudio();
-    if(id === 'hz' || id === 'sharp'){ paintLive(); paintReadout(); }
+    if(id === 'hz' || id === 'sharp'){ paintLive(); paintReadout(); paintWhy(); }
     if(id === 'depth') paintReadout();
   });
 });
@@ -1346,6 +1741,11 @@ Object.keys(PROGS).forEach(k => {
   o.value = k; o.textContent = PROGS[k].nome;
   $('#c_prog').appendChild(o);
 });
+Object.keys(NOISES).forEach(k => {
+  const o = document.createElement('option');
+  o.value = k; o.textContent = NOISES[k].nome + ' · ' + NOISES[k].slope;
+  $('#c_ruido').appendChild(o);
+});
 DURS.forEach(m => {
   const o = document.createElement('option');
   o.value = m; o.textContent = m ? m + ' min' : 'sem fim';
@@ -1365,6 +1765,18 @@ $('#c_prog').addEventListener('change', e => {
   cur.prog = e.target.value; markDirty();
   if(playing) nextChord = ctx.currentTime + .2;
 });
+$('#c_ruido').addEventListener('change', e => {
+  cur.ruido = e.target.value;
+  markDirty(); paintNoise(); applyAudio();
+});
+$('#seg').addEventListener('click', e => {
+  const b = e.target.closest('button[data-ap]');
+  if(!b) return;
+  aparencia = b.dataset.ap;
+  save('aparencia', aparencia);
+  applyTheme();
+});
+sysDark.addEventListener('change', () => { if(aparencia === 'sistema') applyTheme(); });
 $('#c_bin').addEventListener('change', e => {
   cur.bin = e.target.checked; markDirty(); applyAudio(); paintReadout();
 });
@@ -1387,6 +1799,8 @@ function syncControls(){
   $('#c_escala').value = cur.escala;
   $('#c_prog').value   = cur.prog;
   $('#c_bin').checked  = !!cur.bin;
+  paintNoise();
+  paintWhy();
 }
 
 /* ===================== salvar / transferir ===================== */
@@ -1445,10 +1859,10 @@ $('#importBtn').addEventListener('click', () => {
 });
 
 /* ===================== abas ===================== */
-['modos','ajustes','motor'].forEach(name => {
+['modos','ajustes','visual','motor'].forEach(name => {
   document.getElementById('t-' + name).addEventListener('click', () => {
     tab = name;
-    ['modos','ajustes','motor'].forEach(n => {
+    ['modos','ajustes','visual','motor'].forEach(n => {
       document.getElementById('t-' + n).setAttribute('aria-selected', String(n === name));
       document.getElementById('p-' + n).hidden = n !== name;
     });
@@ -1504,6 +1918,11 @@ document.addEventListener('keydown', e => {
   flickOn = read('flick','0') === '1';
   $('#c_flick').checked = flickOn;
 
+  const tm = read('tema','sodio');
+  if(THEMES[tm]) temaId = tm;
+  const ap = read('aparencia','sistema');
+  if(['sistema','light','dark'].includes(ap)) aparencia = ap;
+
   /* atalhos do PWA: ./?modo=foco */
   try{
     const want = new URLSearchParams(location.search).get('modo');
@@ -1519,6 +1938,9 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   readTheme(); requestAnimationFrame(redrawWaves);
 });
 
+renderSwatches();
+renderRecipes();
+applyTheme();
 syncControls();
 renderModes();
 paintHeader();
