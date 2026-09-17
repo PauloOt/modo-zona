@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "zona", "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/serve.mjs", "5173"], "port": 5173 }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "Modo Zona",
+  "short_name": "Zona",
+  "description": "Música funcional gerada em tempo real: trilha ambiente com modulação de amplitude na frequência da faixa de EEG que você escolher.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "id": "/modo-zona/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#0A0C10",
+  "theme_color": "#0A0C10",
+  "categories": ["productivity", "music", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Foco — 16 Hz",
+      "short_name": "Foco",
+      "url": "./?modo=foco",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Zona — 40 Hz",
+      "short_name": "Zona",
+      "url": "./?modo=zona",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sono — desce até 2,5 Hz",
+      "short_name": "Sono",
+      "url": "./?modo=sono",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
